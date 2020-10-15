@@ -10,16 +10,16 @@ RUN set -eux; \
 
 RUN set -eux; \
     apk --no-cache add \
-            curl \
             libmemcached-dev \
-            libz-dev \
-            libpq-dev \
-            libjpeg-dev \
+            zlib-dev \
+            postgresql-dev \
+            jpeg-dev \
             libpng-dev \
-            libfreetype6-dev \
-            libssl-dev \
-            libmcrypt-dev \
-            libonig-dev;
+            freetype-dev \
+            libressl-dev \
+            libmcrypt-dev;
+            # \
+            # libonig-dev;
 
 RUN set -eux; \
     # Install the PHP pdo_mysql extention
