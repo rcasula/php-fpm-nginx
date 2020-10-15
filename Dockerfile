@@ -3,15 +3,41 @@ FROM php:7.4-fpm-alpine
 LABEL Maintainer="Roberto Casula <roberto@casula.dev>" \
       Description="Lightweight container with Nginx & PHP-FPM 7.4.11 based on Alpine Linux."
 
-# Install packages and remove default server definition
-RUN apk --no-cache add php7-opcache php7-mysqli php7-json php7-openssl php7-curl \
-    php7-zlib php7-xml php7-phar php7-intl php7-dom php7-xmlreader php7-ctype php7-session \
-    php7-mbstring php7-gd \
+RUN set -eux; \
+    apk --no-cache add \
     nginx supervisor curl && \
     rm /etc/nginx/conf.d/default.conf
 
+RUN set -eux; \
+    apk --no-cache add \
+            curl \
+            libmemcached-dev \
+            libz-dev \
+            libpq-dev \
+            libjpeg-dev \
+            libpng-dev \
+            libfreetype6-dev \
+            libssl-dev \
+            libmcrypt-dev \
+            libonig-dev;
+
+RUN set -eux; \
+    # Install the PHP pdo_mysql extention
+    docker-php-ext-install pdo_mysql; \
+    # Install the PHP pdo_pgsql extention
+    docker-php-ext-install pdo_pgsql; \
+    # Install the PHP gd library
+    docker-php-ext-configure gd \
+            --prefix=/usr \
+            --with-jpeg \
+            --with-freetype; \
+    docker-php-ext-install gd; \
+    php -r 'var_dump(gd_info());'
+
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
+
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 # Configure PHP-FPM
 COPY config/fpm-pool.conf /usr/local/etc/php-fpm.d/www.conf
