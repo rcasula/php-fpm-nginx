@@ -1,6 +1,6 @@
 FROM php:7.4-fpm-alpine
 
-LABEL Maintainer="Roberto Casula <roberto.casula@bitapp.it>" \
+LABEL Maintainer="Roberto Casula <roberto@casula.dev>" \
       Description="Lightweight container with Nginx & PHP-FPM 7.4.11 based on Alpine Linux."
 
 # Install packages and remove default server definition
