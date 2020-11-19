@@ -18,7 +18,7 @@ RUN set -eux; \
             libjpeg-turbo \
             freetype-dev \
             libpng-dev \
-            libjpeg-turbo-dev
+            libjpeg-turbo-dev \
             libressl-dev \
             libmcrypt-dev;
             # \
