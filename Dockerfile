@@ -13,26 +13,33 @@ RUN set -eux; \
             libmemcached-dev \
             zlib-dev \
             postgresql-dev \
-            jpeg-dev \
-            libpng-dev \
+            freetype \
+            libpng \
+            libjpeg-turbo \
             freetype-dev \
+            libpng-dev \
+            libjpeg-turbo-dev
             libressl-dev \
             libmcrypt-dev;
             # \
             # libonig-dev;
-
+            
 RUN set -eux; \
     # Install the PHP pdo_mysql extention
     docker-php-ext-install pdo_mysql; \
     # Install the PHP pdo_pgsql extention
-    docker-php-ext-install pdo_pgsql; \
+    docker-php-ext-install pdo_pgsql;
+    
+RUN set -eux; \
     # Install the PHP gd library
     docker-php-ext-configure gd \
-            --prefix=/usr \
-            --with-jpeg \
-            --with-freetype; \
-    docker-php-ext-install gd; \
-    php -r 'var_dump(gd_info());'
+      --with-freetype \
+      --with-jpeg \
+      NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
+      docker-php-ext-install -j$(nproc) gd && \
+      apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev
+    
+RUN php -r 'var_dump(gd_info());'
 
 # Configure nginx
 COPY config/nginx.conf /etc/nginx/nginx.conf
