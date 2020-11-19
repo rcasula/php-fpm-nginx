@@ -16,6 +16,10 @@ RUN set -eux; \
             freetype \
             libpng \
             libjpeg-turbo \
+            zip \ 
+            libzip \
+            zlib-dev \
+            libzip-dev \
             freetype-dev \
             libpng-dev \
             libjpeg-turbo-dev \
@@ -38,6 +42,8 @@ RUN set -eux; \
       NPROC=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
       docker-php-ext-install -j$(nproc) gd && \
       apk del --no-cache freetype-dev libpng-dev libjpeg-turbo-dev
+
+RUN docker-php-ext-install zip
     
 RUN php -r 'var_dump(gd_info());'
 
