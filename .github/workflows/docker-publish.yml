@@ -31,13 +31,14 @@ jobs:
           DOCKER_IMAGE=robcas/php-fpm-nginx
           VERSION=latest
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/}
+            VERSION=${GITHUB_REF#refs/tags/} | sed -r 's#v##g')
           elif [[ $GITHUB_REF == refs/heads/* ]]; then
             VERSION=$(echo ${GITHUB_REF#refs/heads/} | sed -r 's#/+#-#g')
           elif [[ $GITHUB_REF == refs/pull/* ]]; then
             VERSION=pr-${{ github.event.number }}
           fi
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
+          TAGS="${DOCKER_IMAGE}:latest"
+          TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
           if [ "${{ github.event_name }}" = "push" ]; then
             TAGS="$TAGS,${DOCKER_IMAGE}:sha-${GITHUB_SHA::8}"
           fi
